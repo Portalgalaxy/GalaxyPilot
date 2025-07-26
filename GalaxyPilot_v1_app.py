@@ -16,20 +16,25 @@ ticker = st.selectbox("Selecciona un ticker:", ["SPY", "AAPL", "NVDA"])
 data = yf.download(ticker, period="1mo")
 
 if data.empty or "Close" not in data.columns:
-    st.error("⚠ No se pudieron cargar los datos del ticker o falta la columna 'Close'. Intenta con otro ticker o más tarde.")
-    st.stop()
+    st.warning("⚠ No se pudieron cargar los datos reales de precios. Se usará un valor estimado por defecto.")
+    last_close = 640.00  # Valor por defecto en caso de error
+else:
+    last_close = round(data["Close"].iloc[-1], 2)
 
-# Display Price Chart
-st.subheader(f"📈 Precio de cierre – {ticker}")
-st.line_chart(data["Close"])
+# Mostrar gráfico solo si hay datos reales
+if not data.empty and "Close" in data.columns:
+    st.subheader(f"📈 Precio de cierre – {ticker}")
+    st.line_chart(data["Close"])
+else:
+    st.info("Gráfico no disponible por falta de datos.")
 
 # Estrategia
 st.markdown("### 🎯 Estrategia Cardona Seleccionada")
 estrategia = st.radio("Estrategia:", ["Gap Bajista al Alza", "CALL en canal", "PUT en consolidación"])
 st.write(f"Estrategia seleccionada: **{estrategia}**")
 
-# Simulación básica
-strike = st.number_input("Strike Price", value=round(data["Close"][-1], 2))
+# Simulación básica con fallback en strike
+strike = st.number_input("Strike Price", value=last_close)
 vencimiento = st.date_input("Vencimiento", value=date.today())
 prima = st.slider("Prima estimada ($)", 0.5, 10.0, 1.5)
 
@@ -40,4 +45,4 @@ st.markdown("💾 **Copia manualmente esta info para tu bitácora Notion:**")
 st.code(f"Ticker: {ticker} | Estrategia: {estrategia} | Strike: {strike} | Prima: ${prima} | Vencimiento: {vencimiento}")
 
 st.markdown("---")
-st.caption("Versión MVP v0.1 • Colores: naranja, verde, azul • Marca: GalaxyPilot")
+st.caption("Versión MVP v0.1 • Colores: naranja, verde, azul • Marca: GalaxyPilot • Modo Fallback activado")
