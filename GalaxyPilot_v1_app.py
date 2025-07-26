@@ -11,7 +11,13 @@ st.markdown("### Trading de Opciones | ETFs | Acciones")
 
 # Ticker Selector
 ticker = st.selectbox("Selecciona un ticker:", ["SPY", "AAPL", "NVDA"])
+
+# Descargar datos
 data = yf.download(ticker, period="1mo")
+
+if data.empty or "Close" not in data.columns:
+    st.error("⚠ No se pudieron cargar los datos del ticker o falta la columna 'Close'. Intenta con otro ticker o más tarde.")
+    st.stop()
 
 # Display Price Chart
 st.subheader(f"📈 Precio de cierre – {ticker}")
