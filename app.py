@@ -1,4 +1,3 @@
-
 import streamlit as st
 import yfinance as yf
 from datetime import date
@@ -7,7 +6,7 @@ st.set_page_config(page_title="GalaxyPilot", layout="wide")
 
 # Branding
 st.markdown("# 🚀 GalaxyPilot – La Opción Inteligente")
-st.markdown("### Trading de Opciones | ETFs | Acciones")
+st.markdown("### 📊 Trading de Opciones | ETFs | Acciones")
 
 # Ticker Selector
 ticker = st.selectbox("Selecciona un ticker:", ["SPY", "AAPL", "NVDA"])
@@ -23,7 +22,7 @@ else:
 
 # Mostrar gráfico solo si hay datos reales
 if not data.empty and "Close" in data.columns:
-    st.subheader(f"📈 Precio de cierre – {ticker}")
+    st.subheader(f"📈 Precio de cierre - ({ticker})")
     st.line_chart(data["Close"])
 else:
     st.info("Gráfico no disponible por falta de datos.")
@@ -41,8 +40,6 @@ prima = st.slider("Prima estimada ($)", 0.5, 10.0, 1.5)
 st.markdown(f"💰 Posible resultado al vencer: **{round(prima * 100, 2)} USD**")
 
 # Exportación manual
-st.markdown("💾 **Copia manualmente esta info para tu bitácora Notion:**")
-st.code(f"Ticker: {ticker} | Estrategia: {estrategia} | Strike: {strike} | Prima: ${prima} | Vencimiento: {vencimiento}")
-
-st.markdown("---")
-st.caption("Versión MVP v0.1 • Colores: naranja, verde, azul • Marca: GalaxyPilot • Modo Fallback activado")
+st.markdown("🧾 **Copia manualmente esta info para tu bitácora Notion:**")
+st.code(f"Ticker: {ticker} | Estrategia: {estrategia} | Strike: {strike} | Prima: {prima} | Vencimiento: {vencimiento}")
+# Cambio mínimo para activar commit
