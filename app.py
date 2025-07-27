@@ -1,54 +1,20 @@
+
 import streamlit as st
-import yfinance as yf
-from datetime import date
+import pandas as pd
 
-st.set_page_config(page_title="GalaxyPilot", layout="wide")
+st.set_page_config(page_title="GalaxyPilot – La Opción Inteligente")
 
-# Branding
-st.markdown("# 🚀 GalaxyPilot – La Opción Inteligente")
-st.markdown("### 📊 Trading de Opciones | ETFs | Acciones")
+st.title("🚀 GalaxyPilot – La Opción Inteligente")
+st.subheader("📊 Simulación de datos sin conexión a Yahoo Finance")
 
-# Ticker Selector
-ticker = st.selectbox("Selecciona un ticker:", ["SPY", "AAPL", "NVDA"])
+# Cargar datos simulados
+df = pd.DataFrame({
+    "Date": ['2025-06-28', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-02', '2025-07-03', '2025-07-04', '2025-07-05', '2025-07-06', '2025-07-07', '2025-07-08', '2025-07-09', '2025-07-10', '2025-07-11', '2025-07-12', '2025-07-13', '2025-07-14', '2025-07-15', '2025-07-16', '2025-07-17', '2025-07-18', '2025-07-19', '2025-07-20', '2025-07-21', '2025-07-22', '2025-07-23', '2025-07-24', '2025-07-25', '2025-07-26', '2025-07-27'],
+    "Close": [500, 511, 522, 503, 514, 525, 506, 517, 528, 509, 520, 531, 512, 523, 534, 515, 526, 537, 518, 529, 540, 521, 532, 543, 524, 535, 546, 527, 538, 549]
+})
 
-# Descargar datos
-try:
-    data = yf.download(ticker, period="1mo")
-except Exception as e:
-    data = None
-    st.warning("⚠️ Error al intentar descargar los datos de Yahoo Finance.")
+# Mostrar DataFrame
+st.write("### Datos Simulados – SPY", df)
 
-# Evaluar cierre
-if data is None or data.empty or "Close" not in data.columns:
-    st.warning("⚠ No se pudieron cargar los datos reales de precios. Se usará un valor estimado por defecto.")
-    last_close = 640.00
-    show_chart = False
-else:
-    last_close = round(data["Close"].iloc[-1], 2)
-    show_chart = True
-
-# Mostrar gráfico si hay datos
-if show_chart:
-    st.subheader(f"📈 Precio de cierre – {ticker}")
-    st.line_chart(data["Close"])
-else:
-    st.info("📉 Gráfico no disponible por falta de datos.")
-
-# Estrategia
-st.markdown("### 🎯 Estrategia Cardona Seleccionada")
-estrategia = st.radio("Estrategia:", ["Gap Bajista al Alza", "CALL en canal", "PUT en consolidación"])
-st.write(f"Estrategia seleccionada: **{estrategia}**")
-
-# Simulación básica
-strike = st.number_input("Strike Price", value=last_close)
-vencimiento = st.date_input("Vencimiento", value=date.today())
-prima = st.slider("Prima estimada ($)", 0.5, 10.0, 1.5)
-
-st.markdown(f"💰 Posible resultado al vencer: **{round(prima * 100, 2)} USD**")
-
-# Exportación manual
-st.markdown("💾 **Copia manualmente esta info para tu bitácora Notion:**")
-st.code(f"Ticker: {ticker} | Estrategia: {estrategia} | Strike: {strike} | Prima: ${prima} | Vencimiento: {vencimiento}")
-
-st.markdown("---")
-st.caption("Versión MVP v0.1 • Colores: naranja, verde, azul • Marca: GalaxyPilot • Modo Fallback activado")
+# Graficar
+st.line_chart(df.set_index("Date"))
